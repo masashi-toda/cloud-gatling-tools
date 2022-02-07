@@ -1,28 +1,21 @@
 # aws-cli/2.0.4 Python/3.8.2 Darwin/19.3.0 botocore/2.0.0dev8
 
-# import config.
-# You can change the default config with `make cnf="config_special.env" build`
-cnf ?= config.env
-include $(cnf)
-export $(shell sed 's/=.*//' $(cnf))
+# -----------------------------------------------------------------
+#    ENV VARIABLE
+# -----------------------------------------------------------------
+VERSION     := 1.0.0
+APP_NAME    := cloud-gatling-tools/gatling-s3-reporter
+AWS_PROFILE := cloud-gatling-tools
+AWS_REGION  := ap-northeast-1
+PORT        := 4000
 
-# import deploy config
-# You can change the default deploy config with `make cnf="deploy_special.env" release`
-dpl ?= deploy.env
-include $(dpl)
-export $(shell sed 's/=.*//' $(dpl))
-
-# grep the version from the mix file
-VERSION=$(shell ./version.sh)
-
-ACCOUNT_ID=$(shell aws sts get-caller-identity --profile $(AWS_CLI_PROFILE) | jq -r '.Account')
+ACCOUNT_ID=$(shell aws sts get-caller-identity --profile $(AWS_PROFILE) | jq -r '.Account')
 DOCKER_REPO=$(ACCOUNT_ID).dkr.ecr.ap-northeast-1.amazonaws.com
 
 # HELP
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
-
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
@@ -72,11 +65,11 @@ tag-version: ## Generate container `latest` tag
 
 # generate script to login to aws docker repo
 CMD_REPOLOGIN := "aws ecr get-login-password"
-ifdef AWS_CLI_PROFILE
-CMD_REPOLOGIN += " --profile $(AWS_CLI_PROFILE)"
+ifdef AWS_PROFILE
+CMD_REPOLOGIN += " --profile $(AWS_PROFILE)"
 endif
-ifdef AWS_CLI_REGION
-CMD_REPOLOGIN += " --region $(AWS_CLI_REGION)"
+ifdef AWS_REGION
+CMD_REPOLOGIN += " --region $(AWS_REGION)"
 endif
 CMD_REPOLOGIN += " | docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.ap-northeast-1.amazonaws.com/$(APP_NAME)"
 

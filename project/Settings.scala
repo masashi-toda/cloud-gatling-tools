@@ -61,7 +61,8 @@ object Settings {
     )
 
   lazy val dockerBaseSettings = Seq(
-    dockerBaseImage := "adoptopenjdk/openjdk8:x86_64-alpine-jdk8u191-b12",
+    //dockerBaseImage := "adoptopenjdk/openjdk8:x86_64-alpine-jdk8u191-b12",
+    dockerBaseImage := "openjdk:8",
     dockerUpdateLatest := true,
     bashScriptExtraDefines ++= Seq(
       "addJava -Xms${JVM_HEAP_MIN:-1024m}",
@@ -69,7 +70,8 @@ object Settings {
       "addJava -XX:MaxMetaspaceSize=${JVM_META_MAX:-512M}",
       "addJava ${JVM_GC_OPTIONS:--XX:+UseG1GC}",
       "addJava -Dconfig.resource=${CONFIG_RESOURCE:-application.conf}",
-      "addJava -Dakka.remote.startup-timeout=60s"
+      "addJava -Dakka.remote.startup-timeout=60s",
+      "addJava -Dlog4j2.formatMsgNoLookups=true"
     )
   )
 
@@ -91,7 +93,7 @@ object Settings {
       sys.env.getOrElse("AWS_REGION", "ap-northeast-1")
     )),
     Ecr / repositoryName := "cloud-gatling-tools/gatling-runner",
-    Ecr / localDockerImage := "gatlingtools/" + (Docker / packageName).value + ":" + (Docker / version).value,
+    Ecr / localDockerImage := (Docker / packageName).value + ":" + (Docker / version).value,
     Ecr / push := ((Ecr / push) dependsOn (Docker / publishLocal, Ecr / login)).value
   )
 
@@ -100,7 +102,7 @@ object Settings {
       sys.env.getOrElse("AWS_REGION", "ap-northeast-1")
     )),
     Ecr / repositoryName := "cloud-gatling-tools/gatling-aggregate-runner",
-    Ecr / localDockerImage := "gatlingtools/" + (Docker / packageName).value + ":" + (Docker / version).value,
+    Ecr / localDockerImage := (Docker / packageName).value + ":" + (Docker / version).value,
     Ecr / push := ((Ecr / push) dependsOn (Docker / publishLocal, Ecr / login)).value
   )
 

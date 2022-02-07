@@ -2,13 +2,12 @@ FROM openjdk:8-jdk-alpine
 
 LABEL version=0.0.1
 
-ARG AWS_VERSION=1.22.46
+ARG AWS_VERSION=1.22.50
 ARG GATLING_VERSION=3.7.4
 
-
-RUN apk --no-cache add py3-pip jq \
-    && pip3 install --no-cache-dir --upgrade pip \
-    && pip3 install --no-cache-dir awscli==${AWS_VERSION}
+RUN apk --no-cache add py3-pip jq && \
+  pip3 install --no-cache-dir --upgrade pip && \
+  pip3 install --no-cache-dir awscli==${AWS_VERSION}
 
 WORKDIR /opt
 

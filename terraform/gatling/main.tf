@@ -188,8 +188,9 @@ resource "aws_cloudwatch_log_group" "gatling_log_group" {
 resource "aws_s3_bucket" "gatling" {
   count  = var.enabled ? 1 : 0
   bucket = var.gatling_s3_log_bucket_name
-  acl    = "public-read"
-  #region = data.aws_region.current.name
+  acl    = "private"
+
+  force_destroy = true
 
   website {
     index_document = "index.html"
@@ -202,6 +203,14 @@ resource "aws_s3_bucket" "gatling" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "gatling" {
+  bucket                  = aws_s3_bucket.gatling[0].id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 resource "aws_s3_bucket_policy" "gatling" {
   count  = var.enabled ? 1 : 0
   bucket = aws_s3_bucket.gatling[0].id
@@ -212,11 +221,15 @@ resource "aws_s3_bucket_policy" "gatling" {
     "Id": "Policy1550473277080",
     "Statement": [
         {
-            "Sid": "Stmt1550473275984",
             "Effect": "Allow",
             "Principal": "*",
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::${var.gatling_s3_log_bucket_name}/*"
+            "Action": ["s3:GetObject"],
+            "Resource": "arn:aws:s3:::${var.gatling_s3_log_bucket_name}/*",
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": [${var.gatling_s3_log_bucket_ip_list}]
+                }
+            }
         }
     ]
 }

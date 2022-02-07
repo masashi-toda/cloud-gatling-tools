@@ -26,6 +26,7 @@ lazy val `gatling-test` = (project in file("gatling-test"))
 
 lazy val `gatling-runner` = (project in file("gatling-runner"))
   .enablePlugins(JavaAppPackaging, EcrPlugin)
+  .settings(dockerBaseSettings)
   .settings(gatlingBaseSettings)
   .settings(gatlingRunnerEcrSettings)
   .settings(
@@ -37,9 +38,7 @@ lazy val `gatling-runner` = (project in file("gatling-runner"))
     Compile / bashScriptDefines / mainClass := Some(
       "example.tools.gatling.runner.Runner"
     ),
-    dockerBaseImage := "openjdk:8",
     Docker / packageName := "gatling-runner",
-    dockerUpdateLatest := true,
     dockerCommands ++= Seq(
       Cmd("USER", "root"),
       Cmd("RUN", "mkdir /var/log/gatling"),
@@ -55,6 +54,7 @@ lazy val `gatling-s3-reporter` = (project in file("gatling-s3-reporter"))
 lazy val `gatling-aggregate-runner` =
   (project in file("gatling-aggregate-runner"))
     .enablePlugins(JavaAppPackaging, EcrPlugin)
+    .settings(dockerBaseSettings)
     .settings(gatlingBaseSettings)
     .settings(gatlingAggregateRunnerEcrSettings)
     .settings(gatlingAggregateRunTaskSettings)
@@ -62,9 +62,7 @@ lazy val `gatling-aggregate-runner` =
       Compile / bashScriptDefines / mainClass := Some(
         "example.tools.gatling.runner.Runner"
       ),
-      dockerBaseImage := "openjdk:8",
       Docker / packageName := "gatling-aggregate-runner",
-      dockerUpdateLatest := true,
       libraryDependencies ++= Seq(
         "org.slf4j" % "slf4j-api" % "1.7.26",
         "ch.qos.logback" % "logback-classic" % "1.2.3",

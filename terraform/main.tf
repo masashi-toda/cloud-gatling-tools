@@ -58,6 +58,7 @@ module "gatling" {
   gatling_runner_ecr_name           = var.gatling_runner_ecr_name
   gatling_aggregate_runner_ecr_name = var.gatling_aggregate_runner_ecr_name
 
-  gatling_s3_reporter_ecr_name = var.gatling_s3_reporter_ecr_name
-  gatling_s3_log_bucket_name   = var.gatling_s3_log_bucket_name
+  gatling_s3_reporter_ecr_name  = var.gatling_s3_reporter_ecr_name
+  gatling_s3_log_bucket_name    = var.gatling_s3_log_bucket_name
+  gatling_s3_log_bucket_ip_list = var.gatling_s3_log_bucket_ip_list
 }
