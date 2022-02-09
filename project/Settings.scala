@@ -1,7 +1,7 @@
 import com.amazonaws.regions.{Region, Regions}
 import com.github.j5ik2o.reactive.aws.ecs.EcsAsyncClient
 import com.github.j5ik2o.reactive.aws.ecs.implicits._
-import com.typesafe.sbt.SbtNativePackager.autoImport.{maintainer, packageName}
+import com.typesafe.sbt.SbtNativePackager.autoImport.{packageName}
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport.bashScriptExtraDefines
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{
   dockerBaseImage,
@@ -10,14 +10,13 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{
 }
 import sbt.Keys._
 import sbt.internal.util.ManagedLogger
-import sbt.{CrossVersion, Resolver, settingKey, taskKey, _}
+import sbt.{CrossVersion, settingKey, taskKey, _}
 import sbtecr.EcrPlugin.autoImport.{
   localDockerImage,
   login,
   push,
   region,
   repositoryName,
-  repositoryTags,
   _
 }
 import software.amazon.awssdk.services.ecs.model.{AssignPublicIp, Task, _}
@@ -61,8 +60,8 @@ object Settings {
     )
 
   lazy val dockerBaseSettings = Seq(
-    //dockerBaseImage := "adoptopenjdk/openjdk8:x86_64-alpine-jdk8u191-b12",
-    dockerBaseImage := "openjdk:8",
+    dockerBaseImage := "openjdk:11-jre-slim-bullseye",
+    //dockerBaseImage := "amazoncorretto:11",
     dockerUpdateLatest := true,
     bashScriptExtraDefines ++= Seq(
       "addJava -Xms${JVM_HEAP_MIN:-1024m}",
@@ -71,6 +70,8 @@ object Settings {
       "addJava ${JVM_GC_OPTIONS:--XX:+UseG1GC}",
       "addJava -Dconfig.resource=${CONFIG_RESOURCE:-application.conf}",
       "addJava -Dakka.remote.startup-timeout=60s",
+      "addJava -Djava.net.preferIPv4Stack=true",
+      "addJava -Djava.net.preferIPv6Addresses=false",
       "addJava -Dlog4j2.formatMsgNoLookups=true"
     )
   )

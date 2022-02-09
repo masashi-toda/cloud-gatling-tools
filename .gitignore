@@ -13,5 +13,5 @@ terraform.tfstate*
 
 # only local files
 .env.local
-tools/
+tools/sbt
 docker-compose.yml
