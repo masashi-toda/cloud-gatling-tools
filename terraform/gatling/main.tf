@@ -234,7 +234,7 @@ resource "aws_s3_bucket_policy" "gatling" {
             "Resource": "arn:aws:s3:::${var.gatling_s3_log_bucket_name}/*",
             "Condition": {
                 "IpAddress": {
-                    "aws:SourceIp": [${var.gatling_s3_log_bucket_ip_list}]
+                    "aws:SourceIp": ${var.gatling_s3_log_bucket_ip_list}
                 }
             }
         }
