@@ -5,7 +5,6 @@ project/project
 # terraform ignore list
 .terraform/
 .terraform*
-terraform.tfvars
 terraform.tfstate*
 
 # IDE (IntelliJ)

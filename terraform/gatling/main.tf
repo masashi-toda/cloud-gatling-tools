@@ -127,6 +127,13 @@ resource "aws_ecs_task_definition" "gatling_runner" {
   {
     "name": "gatling-runner",
     "essential": true,
+    "ulimits": [
+      {
+        "name": "nofile",
+        "softLimit": 65535,
+        "hardLimit": 65535
+      }
+    ],
     "image": "${aws_ecr_repository.gatling_runner_ecr[0].repository_url}",
     "environment": [
       { "name": "AWS_REGION", "value": "${data.aws_region.current.name}" },
