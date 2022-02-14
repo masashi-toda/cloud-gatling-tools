@@ -1,0 +1,17 @@
+# sbt ignore list
+target/
+project/project
+
+# terraform ignore list
+.terraform/
+.terraform*
+terraform.tfstate*
+
+# IDE (IntelliJ)
+.idea
+.bsp
+
+# only local files
+.env.local
+tools/sbt
+docker-compose.yml
